@@ -25,15 +25,15 @@ cd
 Add the following to the each _variables.tf_ file, and fill in the _GCP Project ID_:
 ```
 variable "region" {
- default = "us-central1"
+ default = "us-east1"
 }
 
 variable "zone" {
- default = "us-central1-a"
+ default = "us-east1"
 }
 
 variable "project_id" {
- default = "<FILL IN PROJECT ID>"
+ default = "qwiklabs-gcp-01-b83af9f037ad"
 }
 ```
 Add the following to the _main.tf_ file:
@@ -147,7 +147,7 @@ Next, update the _main.tf_ file so that the terraform block looks like the follo
 ```
 terraform {
   backend "gcs" {
-    bucket  = "<FILL IN PROJECT ID>"
+    bucket  = "tf-bucket-599456"
  prefix  = "terraform/state"
   }
   required_providers {
@@ -199,8 +199,8 @@ resource "google_compute_instance" "tf-instance-2" {
   }
 }
 
-resource "google_compute_instance" "<FILL IN INSTANCE 3 NAME>" {
-  name         = "<FILL IN INSTANCE 3 NAME>"
+resource "google_compute_instance" "tf-instance-627898" {
+  name         = "tf-instance-627898"
   machine_type = "n1-standard-2"
   zone         = "us-central1-a"
   allow_stopping_for_update = true
@@ -233,8 +233,8 @@ terraform apply
 ```
 Remove the _tf-instance-3_ resource from the _instances.tf_ file. Delete the following code chunk from the file.
 ```
-resource "google_compute_instance" "<FILL IN INSTANCE 3 NAME>" {
-  name         = "<FILL IN INSTANCE 3 NAME>"
+resource "google_compute_instance" "tf-instance-627898" {
+  name         = "tf-instance-627898"
   machine_type = "n1-standard-2"
   zone         = "us-central1-a"
   allow_stopping_for_update = true
@@ -259,22 +259,22 @@ Copy and paste the following to the end of _main.tf_ file, fill in _Version Numb
 ```
 module "vpc" {
     source  = "terraform-google-modules/network/google"
-    version = "~> <FILL IN VERSION NUMBER>"
+    version = "~> 3.4.0"
 
     project_id   = "qwiklabs-gcp-04-f2c1c01a09d3"
-    network_name = "<FILL IN NETWORK NAME>"
+    network_name = "tf-vpc-607038"
     routing_mode = "GLOBAL"
 
     subnets = [
         {
             subnet_name           = "subnet-01"
             subnet_ip             = "10.10.10.0/24"
-            subnet_region         = "us-central1"
+            subnet_region         = "us-east1"
         },
         {
             subnet_name           = "subnet-02"
             subnet_ip             = "10.10.20.0/24"
-            subnet_region         = "us-central1"
+            subnet_region         = "us-east11"
             subnet_private_access = "true"
             subnet_flow_logs      = "true"
             description           = "This subnet has a description"
@@ -302,7 +302,7 @@ resource "google_compute_instance" "tf-instance-1" {
   }
 
   network_interface {
- network = "<FILL IN NETWORK NAME>"
+ network = "tf-vpc-607038"
     subnetwork = "subnet-01"
   }
 }
@@ -320,7 +320,7 @@ resource "google_compute_instance" "tf-instance-2" {
   }
 
   network_interface {
- network = "<FILL IN NETWORK NAME>"
+ network = "tf-vpc-607038"
     subnetwork = "subnet-02"
   }
 }
@@ -335,7 +335,7 @@ Add the following resource to the _main.tf_ file, fill in the _GCP Project ID_ a
 ```
 resource "google_compute_firewall" "tf-firewall" {
   name    = "tf-firewall"
- network = "projects/<FILL IN PROJECT_ID>/global/networks/<FILL IN NETWORK NAME>"
+ network = "projects/qwiklabs-gcp-01-b83af9f037ad/global/networks/tf-vpc-607038"
 
   allow {
     protocol = "tcp"
